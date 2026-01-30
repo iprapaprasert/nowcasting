@@ -1,7 +1,7 @@
 # Nowcasting
 This repository contains codes and workfiles using in nowcasting course. All codes are written to comply with EViews program.
 
-In this course, we study:
+## Contents
 1. Introduction to Nowcasting
 2. Introduction to EViews
 3. Useful Statistical Procedures for Time Series Data
