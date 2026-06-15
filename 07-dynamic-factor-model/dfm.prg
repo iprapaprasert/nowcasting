@@ -4,11 +4,11 @@ subroutine dfm_vars(string %vars, string %smpl, string %pcys, string %d04s, stri
 	'
 	' Parameters
 	' ----------
-	' vars : vatiables 
+	' vars : variables 
 	' smpl : sample 
-	' pcys
-	' d04s
-	' strname
+	' pcys : list of variables transformed by @pcy
+	' d04s : list of variables transformed by d(0,4)
+	' strname : name of string object keeping list of variables using in dfm model
 	'''
 	smpl {%smpl}
 	%dfm_vars = ""
@@ -34,10 +34,10 @@ endsub
 
 subroutine dfm(string %y, string %bdmy, string %bdmy_sample, string %xs, string %forc, string %fpref)
 	'''
-	' forecast a dynamic factor model
+	' Forecast a dynamic factor model
 	' Must using demeaned YoY (@pcy, dlog(0,4) data 
 	' Recommended using dfm_vars function to create the input series 
-	' Don't forget to add mean later!
+	' Note that dfm generates pcy series using format `pcy_{%fpref}_dfm`
 	'
 	' Parameters
 	' ----------
