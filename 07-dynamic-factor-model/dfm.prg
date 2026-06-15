@@ -32,7 +32,7 @@ subroutine dfm_vars(string %vars, string %smpl, string %pcys, string %d04s, stri
 endsub
 
 
-subroutine dfm(string %y, string %bdmy, string %bdmy_sample, string %xs, string %forc, string %fpref)
+subroutine dfm(string %y, string %bdmy, string %sample, string %xs, string %forc, string %fpref)
 	'''
 	' Forecast a dynamic factor model
 	' Must using demeaned YoY (@pcy, dlog(0,4) data 
@@ -43,10 +43,9 @@ subroutine dfm(string %y, string %bdmy, string %bdmy_sample, string %xs, string 
 	' ----------
 	' y : dependent variable, must be stationary and demean.
 	' bdmy : before demeaned dependent variable
-	' bdmy_sample : before demeaned dependent variable sample
+	' sample : before demeaned dependent variable sample
 	' xs : independent variable, must be stationary and demean
 	' forc : one-period forecast sample for out-of-sample dynamic forecast.
-	'        use format "last-period out-of-sample-period"
 	' fpref : forecast series prefix
 	'''
 	
@@ -82,11 +81,30 @@ subroutine dfm(string %y, string %bdmy, string %bdmy_sample, string %xs, string 
 
 	'' Generate nowcast 
 	''' YoY growth rate nowcast from DFM
-	series pcy_{%fpref}_dfm = c(1)*sm_s1 + sm_e_{%y} + @mean({%bdmy}, %bdmy_sample)
+	series pcy_{%fpref}_dfm = c(1)*sm_s1 + sm_e_{%y} + @mean({%bdmy}, %sample)
 	
 	''' Convert yoy to level
 	smpl @all
-	series {%fpref}_dfm = @recode(@during(%forc), @exp(pcy_{%fpref}_dfm + log({%fpref}(-4))), {%fpref})
+	
+	''' Generate recode_forc
+	'''' Extract year and quarter
+	!yr = @val(@left(%forc, 4))
+	!qtr = @val(@right(%forc, 1))
+
+	'''' Calculate previous quarter
+	if !qtr = 1 then
+    		!prev_yr = !yr - 1
+    		!prev_qtr = 4
+	else
+    		!prev_yr = !yr
+    		!prev_qtr = !qtr - 1
+	endif
+
+	'''' Build the recode_forc
+	%prev_forc = @str(!prev_yr) + "q" + @str(!prev_qtr)
+	%recode_forc = %prev_forc + " " + %forc
+	
+	series {%fpref}_dfm = @recode(@during(%recode_forc), @exp(pcy_{%fpref}_dfm + log({%fpref}(-4))), {%fpref})
 endsub
 
 

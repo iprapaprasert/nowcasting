@@ -29,7 +29,7 @@ group g_dl g_dl_rgdp g_dl_pmi_manu_new g_dl_im g_dl_retail_sales
 
 '' Create Sspace model
 smpl 2011q3 2022q4
-call dfm("g_dl_rgdp", "dl_rgdp", "2011q3 2022q4", "g_dl_pmi_manu_new g_dl_im g_dl_retail_sales", "2022q3 2022q4", "rgdp")
+call dfm("g_dl_rgdp", "dl_rgdp", "2011q3 2022q4", "g_dl_pmi_manu_new g_dl_im g_dl_retail_sales", "2022q4", "rgdp")
 rename pcy_rgdp_dfm dl_rgdp_dfm
 
 '' Graph state variable
@@ -42,4 +42,5 @@ graph dl_rgdp_forecast.line dl_rgdp_dfm dl_rgdp
 ''' Convert yoy to level
 smpl 2018 2022
 graph rgdp_forecast.line rgdp_dfm rgdp
+
 
